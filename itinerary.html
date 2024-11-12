@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Itinerary for Alfajr Cambodia journeys to Makkah and Madinah.">
+    <meta name="keywords" content="Alfajr Cambodia, Itinerary, Makkah, Madinah, Umrah">
+    <meta name="author" content="Alfajr Cambodia">
+    <title>Itinerary | Alfajr Cambodia</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-50 text-gray-800 font-sans">
+
+    <div id="header-placeholder"></div>
+
+    <!-- Hero Section -->
+    <section class="relative bg-cover bg-center h-96 text-white flex items-center justify-center fade-in" style="background-image: url('https://res.klook.com/image/upload/fl_lossy.progressive,q_90/c_fill,,w_2560,/v1670577664/banner/rtw7fgqatgoc1vpcpamb.webp');">
+        <div class="absolute inset-0 bg-black opacity-30"></div>
+        <div class="relative text-center z-10">
+            <h1 class="text-5xl font-bold">Itineraries for Your Journey</h1>
+            <p class="text-lg mt-2">From local escapes to far-flung adventures, find what makes you happy anytime, anywhere.</p>
+        </div>
+    </section>
+
+    <!-- Itinerary Section -->
+    <section class="py-12">
+        <div class="container mx-auto">
+            <h1 class="text-4xl font-bold text-center text-gray-800 mb-8">Itinerary</h1>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- Itinerary 1 -->
+                <div>
+                    <h2 class="text-3xl font-bold text-gray-800 mb-4">Itinerary 1: Phnom Penh to Madinah and Makkah</h2>
+                    <div id="itinerary1">
+                        <p class="text-gray-600">Loading Itinerary 1...</p>
+                    </div>
+                </div>
+
+                <!-- Itinerary 2 -->
+                <div>
+                    <h2 class="text-3xl font-bold text-gray-800 mb-4">Itinerary 2: KLIA to Makkah and Madinah</h2>
+                    <div id="itinerary2">
+                        <p class="text-gray-600">Loading Itinerary 2...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- More to Explore Section -->
+    <section class="relative container mx-auto py-12 fade-in bg-cover bg-center text-white p-2" style="background-image: url('https://res.klook.com/image/upload/fl_lossy.progressive,q_auto/bottom2x_ft5osi.webp');">
+        <div class="absolute inset-0 bg-black opacity-30"></div>
+        <div class="relative z-10 text-center">
+            <h2 class="text-3xl font-bold mb-6">More to explore</h2>
+            <div class="container mx-auto flex flex-col md:flex-row items-center bg-opacity-0 p-6 md:p-12">
+                <div class="md:w-1/2 flex flex-col items-center md:items-start">
+                    <h3 class="text-2xl font-bold mb-4">Get 5% off your 1st booking</h3>
+                    <p class="mb-4">Enjoy a hassle-free booking on the app when you get the discount!</p>
+                    <form class="flex items-center w-full">
+                        <input type="email" placeholder="Email" class="p-2 rounded-l-lg w-full md:w-2/3 text-gray-800" required>
+                        <button type="submit" class="px-4 py-2 bg-blue-500 rounded-r-lg text-white">Send</button>
+                    </form>
+                </div>
+                <div class="md:w-1/2 flex justify-center md:justify-end items-center mt-6 md:mt-0">
+                    <div class="text-center">
+                        <p class="mb-2">Scan the magic code to download Klook</p>
+                        <img src="path-to-qr-code.png" alt="QR Code" class="w-24 h-24 mx-auto">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div id="footer-placeholder"></div>
+
+    <script>
+        async function loadFooter() {
+            try {
+                const response = await fetch('pages/footer.html');
+                if (!response.ok) throw new Error('Failed to load footer');
+                const footerContent = await response.text();
+                document.getElementById('footer-placeholder').innerHTML = footerContent;
+            } catch (error) {
+                console.error('Error loading footer:', error);
+            }
+        }
+
+        async function loadHeader() {
+            try {
+                const response = await fetch('pages/header.html');
+                if (!response.ok) throw new Error('Failed to load header');
+                const headerContent = await response.text();
+                document.getElementById('header-placeholder').innerHTML = headerContent;
+            } catch (error) {
+                console.error('Error loading header:', error);
+            }
+        }
+
+        async function fetchItineraries() {
+            try {
+                const response = await fetch('datas/itineraries.json');
+                if (!response.ok) throw new Error('Network response was not ok');
+                
+                const itineraries = await response.json();
+                displayItinerary(itineraries.itinerary1, 'itinerary1');
+                displayItinerary(itineraries.itinerary2, 'itinerary2');
+            } catch (error) {
+                console.error('Error fetching itinerary data:', error);
+                document.getElementById('itinerary1').innerHTML = "<p class='text-red-600'>Error loading itinerary data. Please try again later.</p>";
+                document.getElementById('itinerary2').innerHTML = "<p class='text-red-600'>Error loading itinerary data. Please try again later.</p>";
+            }
+        }
+
+        function displayItinerary(itineraryData, elementId) {
+            const itineraryContainer = document.getElementById(elementId);
+            itineraryContainer.innerHTML = '';
+            if (!itineraryData || itineraryData.length === 0) {
+                itineraryContainer.innerHTML = "<p class='text-gray-600'>No itinerary data available.</p>";
+                return;
+            }
+
+            itineraryData.forEach(item => {
+                itineraryContainer.innerHTML += `
+                    <div class="bg-white p-4 rounded-lg shadow-md mb-4">
+                        <h3 class="text-xl font-semibold">${item.day}</h3>
+                        <p>${item.description}</p>
+                    </div>`;
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            loadHeader();
+            loadFooter();
+            fetchItineraries();
+        });
+    </script>
+
+</body>
+</html>

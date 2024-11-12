@@ -1,0 +1,42 @@
+[
+    {
+        "category": "singapore-airlines",
+        "airline": "Singapore Airlines",
+        "itinerary": "Phnom Penh (PNH) - Singapore (SIN)",
+        "price": "150",
+        "currency": "USD",
+        "logo": "assets/images/airlines/singapore_airlines_logo.svg"
+    },
+    {
+        "category": "qatar-airways",
+        "airline": "Qatar Airways",
+        "itinerary": "Phnom Penh (PNH) - Doha (DOH)",
+        "price": "300",
+        "currency": "USD",
+        "logo": "assets/images/airlines/qatar_qirways_logo.png"
+    },
+    {
+        "category": "thai-airways",
+        "airline": "Thai Airways",
+        "itinerary": "Phnom Penh (PNH) - Bangkok (BKK)",
+        "price": "120",
+        "currency": "USD",
+        "logo": "assets/images/airlines/thai_airways_logo.svg"
+    },
+    {
+        "category": "airasia",
+        "airline": "AirAsia",
+        "itinerary": "Phnom Penh (PNH) - Kuala Lumpur (KUL)",
+        "price": "80",
+        "currency": "USD",
+        "logo": "assets/images/airlines/AirAsia_New_Logo.svg"
+    },
+    {
+        "category": "emirates",
+        "airline": "Emirates",
+        "itinerary": "Phnom Penh (PNH) - Dubai (DXB)",
+        "price": "400",
+        "currency": "USD",
+        "logo": "assets/images/airlines/Emirates_logo.svg"
+    }
+]

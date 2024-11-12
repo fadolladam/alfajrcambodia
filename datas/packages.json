@@ -1,0 +1,50 @@
+[
+    {
+        "id": 1,
+        "category": "theme-parks",
+        "title": "Tokyo Disneyland Ticket",
+        "location": "Theme parks • Tokyo",
+        "price": "63.29",
+        "currency": "US$",
+        "rating": 4.8,
+        "reviews": "67,308",
+        "booked": "3M+ booked",
+        "image": "path-to-image1.jpg"
+    },
+    {
+        "id": 2,
+        "category": "rail-passes",
+        "title": "JR Whole Japan Rail Pass",
+        "location": "Rail passes • Tokyo",
+        "price": "329.15",
+        "currency": "US$",
+        "rating": 4.8,
+        "reviews": "27,288",
+        "booked": "600K+ booked",
+        "image": "path-to-image2.jpg"
+    },
+    {
+        "id": 3,
+        "category": "observation-decks",
+        "title": "SHIBUYA SKY Ticket",
+        "location": "Observation decks • Tokyo",
+        "price": "16.45",
+        "currency": "US$",
+        "rating": 4.7,
+        "reviews": "28,497",
+        "booked": "1M+ booked",
+        "image": "path-to-image3.jpg"
+    },
+    {
+        "id": 4,
+        "category": "food-dining",
+        "title": "Tokyo Food Tour",
+        "location": "Food & dining • Tokyo",
+        "price": "45.00",
+        "currency": "US$",
+        "rating": 4.9,
+        "reviews": "15,000",
+        "booked": "200K+ booked",
+        "image": "path-to-image4.jpg"
+    }
+]

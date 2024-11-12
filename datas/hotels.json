@@ -1,0 +1,48 @@
+[
+    {
+        "category": "luxury",
+        "hotel": "The Ritz-Carlton",
+        "location": "Phnom Penh, Cambodia",
+        "price": "USD 250",
+        "rating": 4.9,
+        "reviews": 320,
+        "image": "https://cambodiainvestmentreview.com/wp-content/uploads/2024/08/WhatsApp-Image-2024-08-14-at-12.57.02_e4189ecb.jpg"
+    },
+    {
+        "category": "budget",
+        "hotel": "Budget Inn",
+        "location": "Phnom Penh, Cambodia",
+        "price": "USD 50",
+        "rating": 4.2,
+        "reviews": 150,
+        "image": "assets/images/budget-inn.jpg"
+    },
+    {
+        "category": "mid-range",
+        "hotel": "Holiday Inn",
+        "location": "Phnom Penh, Cambodia",
+        "price": "USD 120",
+        "rating": 4.5,
+        "reviews": 200,
+        "image": "assets/images/holiday-inn.jpg"
+    },
+    {
+        "category": "luxury",
+        "hotel": "Sofitel Luxury Hotel",
+        "location": "Siem Reap, Cambodia",
+        "price": "USD 300",
+        "rating": 4.8,
+        "reviews": 400,
+        "image": "assets/images/sofitel.jpg"
+    },
+    
+    {
+        "category": "budget",
+        "hotel": "Backpackers Hostel",
+        "location": "Siem Reap, Cambodia",
+        "price": "USD 30",
+        "rating": 4.0,
+        "reviews": 120,
+        "image": "assets/images/backpackers-hostel.jpg"
+    }
+]

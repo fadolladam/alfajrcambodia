@@ -1,0 +1,102 @@
+{
+    "itinerary1": [
+        {
+            "day": "Hari 01",
+            "description": "KLIA (JEDDAH - MEKAH) - Para jemaah diminta berada di KLIA 1, 5 jam sebelum penerbangan..."
+        },
+        {
+            "day": "Hari 02",
+            "description": "MEKAH - Jemaah bebas untuk beribadah di Masjidil Haram."
+        },
+        {
+            "day": "Hari 03",
+            "description": "MEKAH - Jemaah bebas untuk beribadah di Masjidil Haram."
+        },
+        {
+            "day": "Hari 04",
+            "description": "MEKAH - Jemaah bebas untuk beribadah di Masjidil Haram."
+        },
+        {
+            "day": "Hari 05",
+            "description": "MEKAH - Jemaah bebas untuk beribadah di Masjidil Haram."
+        },
+        {
+            "day": "Hari 06",
+            "description": "MEKAH - Jemaah bebas untuk beribadah di Masjidil Haram."
+        },
+        {
+            "day": "Hari 07",
+            "description": "MEKAH - Jemaah bebas untuk beribadah di Masjidil Haram."
+        },
+        {
+            "day": "Hari 08",
+            "description": "MEKAH - Jemaah bebas untuk beribadah di Masjidil Haram."
+        },
+        {
+            "day": "Hari 09",
+            "description": "MEKAH - Jemaah bebas untuk beribadah di Masjidil Haram."
+        },
+        {
+            "day": "Hari 10",
+            "description": "MEKAH - Jemaah bebas untuk beribadah di Masjidil Haram."
+        },
+        {
+            "day": "Hari 11",
+            "description": "MEKAH - Jemaah bebas untuk beribadah di Masjidil Haram."
+        },
+        {
+            "day": "Hari 12",
+            "description": "MEKAH (ZIARAH LUAR) - Jemaah akan dibawa lawatan luar sekitar Kota Makkah..."
+        }
+    ],
+    "itinerary2": [
+        {
+            "day": "Hari 01",
+            "description": "KLIA (JEDDAH - MEKAH) - Para jemaah diminta berada di KLIA 1, 5 jam sebelum penerbangan..."
+        },
+        {
+            "day": "Hari 02",
+            "description": "MEKAH - Jemaah bebas untuk beribadah di Masjidil Haram."
+        },
+        {
+            "day": "Hari 03",
+            "description": "MEKAH - Jemaah bebas untuk beribadah di Masjidil Haram."
+        },
+        {
+            "day": "Hari 04",
+            "description": "MEKAH - Jemaah bebas untuk beribadah di Masjidil Haram."
+        },
+        {
+            "day": "Hari 05",
+            "description": "MEKAH - Jemaah bebas untuk beribadah di Masjidil Haram."
+        },
+        {
+            "day": "Hari 06",
+            "description": "MEKAH - Jemaah bebas untuk beribadah di Masjidil Haram."
+        },
+        {
+            "day": "Hari 07",
+            "description": "MEKAH - Jemaah bebas untuk beribadah di Masjidil Haram."
+        },
+        {
+            "day": "Hari 08",
+            "description": "MEKAH - Jemaah bebas untuk beribadah di Masjidil Haram."
+        },
+        {
+            "day": "Hari 09",
+            "description": "MEKAH - Jemaah bebas untuk beribadah di Masjidil Haram."
+        },
+        {
+            "day": "Hari 10",
+            "description": "MEKAH - Jemaah bebas untuk beribadah di Masjidil Haram."
+        },
+        {
+            "day": "Hari 11",
+            "description": "MEKAH - Jemaah bebas untuk beribadah di Masjidil Haram."
+        },
+        {
+            "day": "Hari 12",
+            "description": "MEKAH (ZIARAH LUAR) - Jemaah akan dibawa lawatan luar sekitar Kota Makkah..."
+        }
+    ]
+}
