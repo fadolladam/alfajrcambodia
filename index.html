@@ -237,22 +237,24 @@
     <div id="footer-placeholder"></div>
     <!-- Footer Dynamic Loader -->
     <script>
-    async function loadFooter() {
-        try {
-            const response = await fetch('pages/footer.html');
-            if (!response.ok) {
-                throw new Error('Failed to load footer');
-            }
-            const footerContent = await response.text();
-            document.getElementById('footer-placeholder').innerHTML = footerContent;
-        } catch (error) {
-            console.error('Error loading footer:', error);
+async function loadFooter() {
+    try {
+        const response = await fetch('pages/footer.html');
+        if (!response.ok) {
+            throw new Error('Failed to load footer');
         }
+        const footerContent = await response.text();
+        document.getElementById('footer-placeholder').innerHTML = footerContent;
+    } catch (error) {
+        console.error('Error loading footer:', error);
     }
-    document.addEventListener('DOMContentLoaded', loadFooter);
-    </script>
-    <!-- Header Dynamic Loader -->
-    <script>
+}
+document.addEventListener('DOMContentLoaded', loadFooter);
+</script>
+
+<!-- Header Dynamic Loader with Menu Toggle -->
+<script>
+document.addEventListener('DOMContentLoaded', () => {
     async function loadHeader() {
         try {
             const response = await fetch('pages/header.html');
@@ -261,22 +263,44 @@
             }
             const headerContent = await response.text();
             document.getElementById('header-placeholder').innerHTML = headerContent;
+
+            // Initialize menu toggle after header loads
+            const menuToggle = document.getElementById('menu-toggle');
+            const mobileNavMenu = document.getElementById('mobile-nav-menu');
+            if (menuToggle && mobileNavMenu) {
+                menuToggle.addEventListener('click', () => {
+                    mobileNavMenu.classList.toggle('hidden');
+                });
+
+                document.addEventListener('click', (event) => {
+                    if (!mobileNavMenu.contains(event.target) && !menuToggle.contains(event.target)) {
+                        mobileNavMenu.classList.add('hidden');
+                    }
+                });
+            } else {
+                console.error('Menu toggle or mobile nav menu not found.');
+            }
         } catch (error) {
             console.error('Error loading header:', error);
         }
     }
-    document.addEventListener('DOMContentLoaded', loadHeader);
-    </script>
-    <script>
-    // Immediately apply the fade-in effect when the page loads
-    document.addEventListener('DOMContentLoaded', () => {
-        const fadeInElements = document.querySelectorAll('.fade-in');
-        fadeInElements.forEach((element) => {
-            element.classList.add('visible'); // Apply 'visible' to all on load
-        });
+
+    loadHeader();
+});
+</script>
+
+<!-- Apply fade-in effects -->
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const fadeInElements = document.querySelectorAll('.fade-in');
+    fadeInElements.forEach((element) => {
+        element.classList.add('visible');
     });
-    </script>
-    <script src="assets/js/scripts.js"></script>
+});
+</script>
+
+<!-- Global JavaScript -->
+<script src="assets/js/scripts.js"></script>
 </body>
 
 </html>

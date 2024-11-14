@@ -199,7 +199,41 @@
             loadFooter();
             fetchFlights();
         });
-    </script>
+    </script><script>
+document.addEventListener('DOMContentLoaded', () => {
+    async function loadHeader() {
+        try {
+            const response = await fetch('pages/header.html');
+            if (!response.ok) {
+                throw new Error('Failed to load header');
+            }
+            const headerContent = await response.text();
+            document.getElementById('header-placeholder').innerHTML = headerContent;
+
+            // Initialize menu toggle after header loads
+            const menuToggle = document.getElementById('menu-toggle');
+            const mobileNavMenu = document.getElementById('mobile-nav-menu');
+            if (menuToggle && mobileNavMenu) {
+                menuToggle.addEventListener('click', () => {
+                    mobileNavMenu.classList.toggle('hidden');
+                });
+
+                document.addEventListener('click', (event) => {
+                    if (!mobileNavMenu.contains(event.target) && !menuToggle.contains(event.target)) {
+                        mobileNavMenu.classList.add('hidden');
+                    }
+                });
+            } else {
+                console.error('Menu toggle or mobile nav menu not found.');
+            }
+        } catch (error) {
+            console.error('Error loading header:', error);
+        }
+    }
+
+    loadHeader();
+});
+</script>
 </body>
 
 </html>

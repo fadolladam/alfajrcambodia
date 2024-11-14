@@ -110,22 +110,43 @@ document.addEventListener("DOMContentLoaded", async function () {
 });
 
 // Mobile Navigation Toggle
+// Ensure toggle works after header is loaded
 document.addEventListener('DOMContentLoaded', () => {
-    const menuToggle = document.getElementById('menu-toggle');
-    const mobileNavMenu = document.getElementById('mobile-nav-menu');
+    // Function to initialize menu toggle
+    function initMenuToggle() {
+        const menuToggle = document.getElementById('menu-toggle');
+        const mobileNavMenu = document.getElementById('mobile-nav-menu');
 
-    if (menuToggle && mobileNavMenu) {
-        menuToggle.addEventListener('click', () => {
-            mobileNavMenu.classList.toggle('hidden');
-        });
+        if (menuToggle && mobileNavMenu) {
+            menuToggle.addEventListener('click', () => {
+                mobileNavMenu.classList.toggle('hidden'); // Toggle visibility
+            });
 
-        // Close mobile menu if clicking outside
-        document.addEventListener('click', (event) => {
-            if (!mobileNavMenu.contains(event.target) && !menuToggle.contains(event.target)) {
-                mobileNavMenu.classList.add('hidden');
-            }
-        });
-    } else {
-        console.error('Menu toggle or mobile nav menu is missing.');
+            // Close menu if clicking outside
+            document.addEventListener('click', (event) => {
+                if (!mobileNavMenu.contains(event.target) && !menuToggle.contains(event.target)) {
+                    mobileNavMenu.classList.add('hidden');
+                }
+            });
+        } else {
+            console.error('Menu toggle or mobile nav menu element not found.');
+        }
     }
+
+    // Call initMenuToggle once the header is loaded
+    async function loadHeader() {
+        try {
+            const response = await fetch('pages/header.html');
+            if (!response.ok) throw new Error('Failed to load header');
+            const headerContent = await response.text();
+            document.getElementById('header-placeholder').innerHTML = headerContent;
+
+            // Initialize menu toggle after header is loaded
+            initMenuToggle();
+        } catch (error) {
+            console.error('Error loading header:', error);
+        }
+    }
+
+    loadHeader(); // Dynamically load header
 });
