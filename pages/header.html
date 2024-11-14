@@ -2,7 +2,7 @@
 <header class="bg-white shadow-md">
     <div class="container mx-auto flex justify-between items-center p-4">
         <div class="flex items-center space-x-2">
-            <img src="assets/images/logo_black.png" alt="Alfajr Cambodia Logo" class="h-10">
+            <img src="../assets/images/logo_black.png" alt="Alfajr Cambodia Logo" class="h-10">
             <span class="text-2xl font-semibold text-gray-900">Alfajr Cambodia</span>
         </div>
 
@@ -13,7 +13,7 @@
             </svg>
         </button>
 
-        <!-- Navigation -->
+        <!-- Desktop Navigation -->
         <nav id="nav-menu" class="hidden md:flex items-center space-x-6">
             <ul class="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-6">
                 <li><a href="index.html" class="hover:text-orange-600">HOME</a></li>
@@ -26,7 +26,7 @@
         </nav>
     </div>
 
-    <!-- Mobile Menu -->
+    <!-- Mobile Navigation -->
     <nav id="mobile-nav-menu" class="hidden bg-white shadow-md md:hidden">
         <ul class="flex flex-col space-y-4 p-4">
             <li><a href="index.html" class="hover:text-orange-600">HOME</a></li>
@@ -38,14 +38,3 @@
         </ul>
     </nav>
 </header>
-
-<script>
-    // Toggle Menu Functionality
-    const menuToggle = document.getElementById('menu-toggle');
-    const navMenu = document.getElementById('nav-menu');
-    const mobileNavMenu = document.getElementById('mobile-nav-menu');
-
-    menuToggle.addEventListener('click', () => {
-        mobileNavMenu.classList.toggle('hidden');
-    });
-</script>
