@@ -11,82 +11,119 @@
     <!-- Tailwind CSS -->
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link href="assets/css/tailwind-output.css" rel="stylesheet">
+    <link href="assets/css/global.css" rel="stylesheet">
+
     <style>
         /* Custom styles for scroll animations */
-        .fade-in {
-            opacity: 0;
-            transform: translateY(20px);
-            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
-        }
-        .fade-in.visible {
-            opacity: 1;
-            transform: translateY(0);
+    .fade-in {
+        opacity: 0;
+        transform: translateY(20px);
+        transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+    }
+
+    .fade-in.visible {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    /* Trigger visible class immediately on load */
+    .fade-in-load {
+        opacity: 1;
+        transform: translateY(0);
+        transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+    }
+
+    @media (max-width: 768px) {
+        .mobile-padding {
+            padding-left: 1rem;
+            padding-right: 1rem;
         }
 
-        @media (max-width: 768px) {
-            .text-5xl {
-                font-size: 2rem;
-            }
-            .text-3xl {
-                font-size: 1.5rem;
-            }
+        /* Add better spacing for mobile views */
+        .section-mobile {
+            padding-top: 1.5rem;
+            padding-bottom: 1.5rem;
         }
-    </style>
+
+        .text-5xl {
+            font-size: 2rem;
+        }
+
+        .text-3xl {
+            font-size: 1.5rem;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .mobile-padding {
+            padding-left: 0.5rem;
+            padding-right: 0.5rem;
+        }
+
+        .text-5xl {
+            font-size: 1.75rem;
+        }
+
+        .text-3xl {
+            font-size: 1.25rem;
+        }
+    }
+</style>
 </head>
 
 <body class="bg-white text-gray-800 font-sans">
     <!-- Navbar -->
     <div id="header-placeholder"></div>
-    <!-- Hero Section -->
-    <section class="relative bg-cover bg-center h-96 text-white flex items-center justify-center fade-in" style="background-image: url('https://res.klook.com/image/upload/fl_lossy.progressive,q_90/c_fill,,w_2560,/v1670577664/banner/rtw7fgqatgoc1vpcpamb.webp');">
-        <div class="absolute inset-0 bg-black opacity-30"></div>
-        <div class="relative text-center z-10">
-            <h1 class="text-5xl font-bold">Your world of joy</h1>
-            <p class="text-lg mt-2">From local escapes to far-flung adventures, find what makes you happy anytime, anywhere.</p>
-        </div>
+    <!-- Hero Section (Slide) -->
+    <section id="carousel" class="relative overflow-hidden h-96 bg-gray-800 text-white">
+        <div id="carousel-slides" class="flex transition-transform duration-700 ease-in-out"></div>
+        <!-- Controls -->
+        <button id="prev-slide" class="absolute left-0 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-50 p-2 text-white">❮</button>
+        <button id="next-slide" class="absolute right-0 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-50 p-2 text-white">❯</button>
     </section>
     <!-- Why Choose Section -->
-    <section class="py-12 fade-in">
-        <div class="container mx-auto text-left">
-            <h2 class="text-3xl font-bold mb-6">Why Choose Alfajr Cambodia</h2>
-            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
-                <!-- First Item -->
-                <div class="items-start space-x-4">
-                    <img src="https://res.klook.com/image/upload/fl_lossy.progressive,q_85/c_fill,w_112,h_112/v1663655841/ued/platform/Discover_the_possibilities.webp" alt="Spiritual Journey Icon" class="w-12 h-12 object-contain m-5">
-                    <div>
-                        <h3 class="text-xl font-semibold">Your Spiritual Journey Awaits</h3>
-                        <p>From Makkah to Madinah, tailored Umrah and Hajj packages for every pilgrim.</p>
-                    </div>
+<section class="py-12 fade-in mobile-padding">
+    <div class="container mx-auto text-center">
+        <h2 class="text-3xl font-bold mb-6">Why Choose Alfajr Cambodia</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+            <!-- First Item -->
+            <div class="items-start text-left space-x-4 p-4 border rounded-lg shadow-md">
+                <img src="https://res.klook.com/image/upload/fl_lossy.progressive,q_85/c_fill,w_112,h_112/v1663655841/ued/platform/Discover_the_possibilities.webp" alt="Spiritual Journey Icon" class="w-12 h-12 object-contain mb-3">
+                <div>
+                    <h3 class="text-xl font-semibold">Your Spiritual Journey Awaits</h3>
+                    <p>From Makkah to Madinah, tailored Umrah and Hajj packages for every pilgrim.</p>
                 </div>
-                <!-- Second Item -->
-                <div class="items-start space-x-4">
-                    <img src="https://res.klook.com/image/upload/fl_lossy.progressive,q_85/c_fill,w_112,h_112/v1663655841/ued/platform/Discover_the_possibilities.webp" alt="Value and Comfort Icon" class="w-12 h-12 object-contain m-5">
-                    <div>
-                        <h3 class="text-xl font-semibold">Unmatched Value and Comfort</h3>
-                        <p>Affordable packages with premium amenities close to holy sites.</p>
-                    </div>
+            </div>
+            <!-- Second Item -->
+            <div class="items-start text-left space-x-4 p-4 border rounded-lg shadow-md">
+                <img src="https://res.klook.com/image/upload/fl_lossy.progressive,q_85/c_fill,w_112,h_112/v1663655841/ued/platform/Discover_the_possibilities.webp" alt="Value and Comfort Icon" class="w-12 h-12 object-contain mb-3">
+                <div>
+                    <h3 class="text-xl font-semibold">Unmatched Value and Comfort</h3>
+                    <p>Affordable packages with premium amenities close to holy sites.</p>
                 </div>
-                <!-- Third Item -->
-                <div class="items-start space-x-4">
-                    <img src="https://res.klook.com/image/upload/fl_lossy.progressive,q_85/c_fill,w_112,h_112/v1663655841/ued/platform/Discover_the_possibilities.webp" alt="Hassle-Free Pilgrimage Icon" class="w-12 h-12 object-contain m-5">
-                    <div>
-                        <h3 class="text-xl font-semibold">Hassle-Free Pilgrimage</h3>
-                        <p>Our team handles every detail, from flights to hotel arrangements.</p>
-                    </div>
+            </div>
+            <!-- Third Item -->
+            <div class="items-start text-left space-x-4 p-4 border rounded-lg shadow-md">
+                <img src="https://res.klook.com/image/upload/fl_lossy.progressive,q_85/c_fill,w_112,h_112/v1663655841/ued/platform/Discover_the_possibilities.webp" alt="Hassle-Free Pilgrimage Icon" class="w-12 h-12 object-contain mb-3">
+                <div>
+                    <h3 class="text-xl font-semibold">Hassle-Free Pilgrimage</h3>
+                    <p>Our team handles every detail, from flights to hotel arrangements.</p>
                 </div>
-                <!-- Fourth Item -->
-                <div class="items-start space-x-4">
-                    <img src="https://res.klook.com/image/upload/fl_lossy.progressive,q_85/c_fill,w_112,h_112/v1663655841/ued/platform/Discover_the_possibilities.webp" alt="Trust and Experience Icon" class="w-12 h-12 object-contain m-5">
-                    <div>
-                        <h3 class="text-xl font-semibold">Guided by Trust and Experience</h3>
-                        <p>Trusted guidance and support 24/7 on your journey.</p>
-                    </div>
+            </div>
+            <!-- Fourth Item -->
+            <div class="items-start text-left space-x-4 p-4 border rounded-lg shadow-md">
+                <img src="https://res.klook.com/image/upload/fl_lossy.progressive,q_85/c_fill,w_112,h_112/v1663655841/ued/platform/Discover_the_possibilities.webp" alt="Trust and Experience Icon" class="w-12 h-12 object-contain mb-3">
+                <div>
+                    <h3 class="text-xl font-semibold">Guided by Trust and Experience</h3>
+                    <p>Trusted guidance and support 24/7 on your journey.</p>
                 </div>
             </div>
         </div>
-    </section>
+    </div>
+</section>
+
     <!-- Umrah Packages Section -->
-    <section class="py-12 bg-gray-100 fade-in">
+    <section class="py-12 bg-gray-100 fade-in mobile-padding">
         <h2 class="text-3xl text-center font-bold mb-6">Umrah Packages</h2>
         <div class="container mx-auto grid grid-cols-12 gap-6">
             <div class="col-span-12 md:col-span-6 bg-white p-4 shadow-md rounded-lg">
@@ -103,11 +140,15 @@
             </div>
         </div>
         <div class="text-center mt-6">
-            <button class="px-6 py-2 border border-gray-700 text-gray-800 rounded-lg"><a href="packages.html">See all</a></button>
+          <button class="px-6 py-2 border border-gray-700 text-gray-800 rounded-lg hover:bg-primary hover:text-white hover:border-primary transition">
+            <a href="packages.html">See all</a>
+          </button>
         </div>
+
+
     </section>
     <!-- Inspiration Section -->
-    <section class="py-12 fade-in">
+    <section class="py-12 fade-in mobile-padding">
         <h2 class="text-3xl font-bold text-center mb-6">Inspiration for your Itinerary</h2>
         <div class="container mx-auto grid grid-cols-1 md:grid-cols-2 gap-6">
             <!-- First Card with Image Background -->
@@ -129,7 +170,7 @@
         </div>
     </section>
     <!-- Where to Next Section -->
-    <section class="py-12 fade-in">
+    <section class="py-12 fade-in mobile-padding">
         <h2 class="text-3xl font-bold text-center mb-6">Where to next?</h2>
         <div class="container mx-auto grid grid-cols-2 md:grid-cols-6 gap-4">
             <div class="relative group">
@@ -162,7 +203,7 @@
         </div>
     </section>
     <!-- More to Explore Section -->
-    <section class="relative container mx-auto py-12 fade-in bg-cover bg-center text-white p-2" style="background-image: url('https://res.klook.com/image/upload/fl_lossy.progressive,q_auto/bottom2x_ft5osi.webp');">
+    <section class="relative container mx-auto py-12 fade-in bg-cover bg-center text-white p-2 mobile-padding" style="background-image: url('https://res.klook.com/image/upload/fl_lossy.progressive,q_auto/bottom2x_ft5osi.webp');">
         <div class="absolute inset-0 bg-black opacity-30"></div>
         <div class="relative z-10 text-center">
             <h2 class="text-3xl font-bold mb-6">More to explore</h2>
@@ -184,37 +225,48 @@
             </div>
         </div>
     </section>
+    <!-- Footer -->
     <div id="footer-placeholder"></div>
     <!-- Footer Dynamic Loader -->
     <script>
+    async function loadFooter() {
+        try {
+            const response = await fetch('pages/footer.html');
+            if (!response.ok) {
+                throw new Error('Failed to load footer');
+            }
+            const footerContent = await response.text();
+            document.getElementById('footer-placeholder').innerHTML = footerContent;
+        } catch (error) {
+            console.error('Error loading footer:', error);
+        }
+    }
+    document.addEventListener('DOMContentLoaded', loadFooter);
+    </script>
+    <!-- Header Dynamic Loader -->
+    <script>
     async function loadHeader() {
         try {
-            const response = await fetch('pages/header.html'); // Ensure correct path from index.html
+            const response = await fetch('pages/header.html');
             if (!response.ok) {
                 throw new Error('Failed to load header');
             }
             const headerContent = await response.text();
             document.getElementById('header-placeholder').innerHTML = headerContent;
-
-            // Rebind the toggle function since it's dynamically loaded
-            bindMenuToggle();
         } catch (error) {
             console.error('Error loading header:', error);
         }
     }
-
-    // Menu toggle functionality
-    function bindMenuToggle() {
-        const menuToggle = document.getElementById('menu-toggle');
-        const mobileNavMenu = document.getElementById('mobile-nav-menu');
-
-        menuToggle.addEventListener('click', () => {
-            mobileNavMenu.classList.toggle('hidden');
-        });
-    }
-
-    // Load the header on page load
     document.addEventListener('DOMContentLoaded', loadHeader);
+    </script>
+    <script>
+    // Immediately apply the fade-in effect when the page loads
+    document.addEventListener('DOMContentLoaded', () => {
+        const fadeInElements = document.querySelectorAll('.fade-in');
+        fadeInElements.forEach((element) => {
+            element.classList.add('visible'); // Apply 'visible' to all on load
+        });
+    });
     </script>
     <script src="assets/js/scripts.js"></script>
 </body>

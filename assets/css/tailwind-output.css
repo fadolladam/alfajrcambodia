@@ -1,0 +1,29 @@
+/** @type {import('tailwindcss').Config} */
+module.exports = {
+  content: [
+    './*.html', 
+    './pages/**/*.html', 
+    './assets/js/**/*.js' // Adjust paths based on your project structure
+  ],
+  theme: {
+    extend: {
+      colors: {
+        primary: '#FF6C00', // Example custom color
+        secondary: '#4B5563', // Example custom color
+      },
+      spacing: {
+        '100': '25rem', // 400px height
+        '112': '28rem', // 448px height
+        '450': '450px', // Adds a spacing utility for 450px height
+      },
+      boxShadow: {
+        'custom-light': '0 2px 4px rgba(0, 0, 0, 0.1)',
+        'custom-dark': '0 4px 8px rgba(0, 0, 0, 0.3)',
+      },
+      borderWidth: {
+        '2': '2px', // Ensures border width utility for 2px is defined
+      },
+    },
+  },
+  plugins: [],
+};

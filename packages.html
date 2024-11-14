@@ -8,6 +8,8 @@
     <meta name="author" content="Alfajr Cambodia">
     <title>Packages | Alfajr Cambodia</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="assets/css/tailwind-output.css" rel="stylesheet">
+    <link href="assets/css/global.css" rel="stylesheet">    
     <style>
         .category-selected {
             border-bottom: 2px solid #FF6C00;
@@ -17,15 +19,16 @@
 </head>
 <body class="bg-gray-50 text-gray-800 font-sans">
 
+    <!-- Header Placeholder -->
     <div id="header-placeholder"></div>
 
     <!-- Package Section -->
-    <section class="py-12">
+    <section class="py-12 mobile-padding">
         <div class="container mx-auto">
-            <h1 class="text-4xl font-bold text-left text-gray-800 mb-8">Traveler's Favorite Choice</h1>
+            <h1 class="text-4xl font-bold text-left text-gray-800 mb-8 text-center md:text-left">Traveler's Favorite Choice</h1>
 
             <!-- Categories -->
-            <div class="flex justify-left space-x-8 mb-8">
+            <div class="flex flex-wrap justify-center md:justify-left space-x-4 md:space-x-8 mb-8">
                 <button onclick="filterPackages('all')" class="category-btn category-selected" id="category-all">All</button>
                 <button onclick="filterPackages('rail-passes')" class="category-btn" id="category-rail-passes">Rail Passes</button>
                 <button onclick="filterPackages('theme-parks')" class="category-btn" id="category-theme-parks">Theme Parks</button>
@@ -34,12 +37,13 @@
             </div>
 
             <!-- Packages Grid -->
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6" id="package-list">
-                <!-- Packages will be populated here from JSON -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6" id="package-list">
+                <!-- Packages will be dynamically loaded here from JSON -->
             </div>
         </div>
     </section>
 
+    <!-- Footer Placeholder -->
     <div id="footer-placeholder"></div>
 
     <script>

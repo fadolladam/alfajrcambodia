@@ -9,56 +9,62 @@
     <meta name="author" content="Alfajr Cambodia">
     <title>Booking Flight | Alfajr Cambodia</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="assets/css/tailwind-output.css" rel="stylesheet">
+    <link href="assets/css/global.css" rel="stylesheet">   
     <style>
-    .tab-active {
-        border-bottom: 2px solid #FF6C00;
-        color: #FF6C00;
-    }
+        .tab-active {
+            border-bottom: 2px solid #FF6C00;
+            color: #FF6C00;
+        }
 
-    .airline-logo {
-        width: 50px;
-        height: auto;
-    }
+        .airline-logo {
+            width: 50px;
+            height: auto;
+        }
 
-    .btn-search {
-        background-color: #FF6C00;
-        color: white;
-        padding: 8px 16px;
-        border-radius: 6px;
-        text-align: center;
-        transition: background-color 0.3s;
-    }
+        .btn-search {
+            background-color: #FF6C00;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 6px;
+            text-align: center;
+            transition: background-color 0.3s;
+        }
 
-    .btn-search:hover {
-        background-color: #ff5500;
-    }
+        .btn-search:hover {
+            background-color: #ff5500;
+        }
 
-    .price-search-container {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-top: 16px;
-    }
+        .price-search-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 16px;
+        }
     </style>
 </head>
 
 <body class="bg-gray-50 text-gray-800 font-sans">
     <div id="header-placeholder"></div>
+
     <!-- Main Section -->
     <section class="py-12">
         <div class="container mx-auto">
             <h1 class="text-4xl font-bold text-gray-800 text-center mb-8">Book Your Flights</h1>
             <p class="text-center text-gray-600 mb-6">Explore available flights and book tickets with trusted airlines.</p>
             <div class="flex justify-center">
-                <iframe border="0" src="https://www.trip.com/partners/ad/S683160?Allianceid=5582984&SID=127216986&trip_sub1=search_box" style="width: 100%; max-width: 1440px; height: 250px; border: none;" frameborder="0" scrolling="yes" id="S683160">
+                <iframe src="https://www.trip.com/partners/ad/S683160?Allianceid=5582984&SID=127216986&trip_sub1=search_box"
+                        style="width: 100%; max-width: 1440px; height: 250px; border: none;" 
+                        frameborder="0" scrolling="yes" id="S683160">
                 </iframe>
             </div>
         </div>
     </section>
+
     <!-- Airline Tabs Section -->
     <section class="py-12">
         <div class="container mx-auto">
-            <div class="flex justify-left space-x-8 mb-8">
+            <div class="flex flex-wrap justify-center md:justify-start space-x-4 mb-8">
                 <button onclick="filterFlights('all')" class="tab-btn tab-active" id="tab-all">All</button>
                 <button onclick="filterFlights('singapore-airlines')" class="tab-btn" id="tab-singapore-airlines">Singapore Airlines</button>
                 <button onclick="filterFlights('qatar-airways')" class="tab-btn" id="tab-qatar-airways">Qatar Airways</button>
@@ -66,16 +72,18 @@
                 <button onclick="filterFlights('airasia')" class="tab-btn" id="tab-airasia">AirAsia</button>
                 <button onclick="filterFlights('emirates')" class="tab-btn" id="tab-emirates">Emirates</button>
             </div>
+
             <!-- Flights Grid -->
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="flight-list">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" id="flight-list">
                 <!-- Dynamic flight cards will be loaded here -->
             </div>
         </div>
     </section>
+
     <!-- Our Promotions Section -->
     <section class="py-12 fade-in">
         <h2 class="text-3xl font-bold text-center mb-6">Our Promotions</h2>
-        <div class="container mx-auto grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="container mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             <!-- First Card with Image Background -->
             <div class="relative h-80 rounded-lg overflow-hidden text-white flex items-center justify-center bg-cover bg-center" style="background-image: url('http://res.klook.com/image/upload/v1644919107/ymqicjublxq6oid4xsur.webp');">
                 <div class="absolute inset-0 bg-black bg-opacity-30"></div>
@@ -84,6 +92,7 @@
                     <p>Inspiration for your itinerary</p>
                 </div>
             </div>
+
             <!-- Second Card with Image Background -->
             <div class="relative h-80 rounded-lg overflow-hidden text-white flex items-center justify-center bg-cover bg-center" style="background-image: url('http://res.klook.com/image/upload/v1634175091/bn8zsheety1cwg3yjclm.webp');">
                 <div class="absolute inset-0 bg-black bg-opacity-30"></div>
@@ -92,6 +101,8 @@
                     <p>Inspiration for your itinerary</p>
                 </div>
             </div>
+
+            <!-- Third Card with Image Background -->
             <div class="relative h-80 rounded-lg overflow-hidden text-white flex items-center justify-center bg-cover bg-center" style="background-image: url('http://res.klook.com/image/upload/v1634175091/bn8zsheety1cwg3yjclm.webp');">
                 <div class="absolute inset-0 bg-black bg-opacity-30"></div>
                 <div class="relative z-10 text-center p-6">
@@ -101,49 +112,51 @@
             </div>
         </div>
     </section>
+
     <div id="footer-placeholder"></div>
+
     <script>
-    async function loadFooter() {
-        try {
-            const response = await fetch('pages/footer.html');
-            if (!response.ok) throw new Error('Failed to load footer');
-            const footerContent = await response.text();
-            document.getElementById('footer-placeholder').innerHTML = footerContent;
-        } catch (error) {
-            console.error('Error loading footer:', error);
+        async function loadFooter() {
+            try {
+                const response = await fetch('pages/footer.html');
+                if (!response.ok) throw new Error('Failed to load footer');
+                const footerContent = await response.text();
+                document.getElementById('footer-placeholder').innerHTML = footerContent;
+            } catch (error) {
+                console.error('Error loading footer:', error);
+            }
         }
-    }
 
-    async function loadHeader() {
-        try {
-            const response = await fetch('pages/header.html');
-            if (!response.ok) throw new Error('Failed to load header');
-            const headerContent = await response.text();
-            document.getElementById('header-placeholder').innerHTML = headerContent;
-        } catch (error) {
-            console.error('Error loading header:', error);
+        async function loadHeader() {
+            try {
+                const response = await fetch('pages/header.html');
+                if (!response.ok) throw new Error('Failed to load header');
+                const headerContent = await response.text();
+                document.getElementById('header-placeholder').innerHTML = headerContent;
+            } catch (error) {
+                console.error('Error loading header:', error);
+            }
         }
-    }
 
-    async function fetchFlights() {
-        try {
-            const response = await fetch('datas/flights.json'); // Flights JSON data
-            if (!response.ok) throw new Error('Failed to fetch flight data');
-            const flights = await response.json();
-            displayFlights(flights, 'all');
-        } catch (error) {
-            console.error('Error fetching flight data:', error);
-            document.getElementById('flight-list').innerHTML = "<p class='text-red-600'>Error loading flight data. Please try again later.</p>";
+        async function fetchFlights() {
+            try {
+                const response = await fetch('datas/flights.json'); 
+                if (!response.ok) throw new Error('Failed to fetch flight data');
+                const flights = await response.json();
+                displayFlights(flights, 'all');
+            } catch (error) {
+                console.error('Error fetching flight data:', error);
+                document.getElementById('flight-list').innerHTML = "<p class='text-red-600'>Error loading flight data. Please try again later.</p>";
+            }
         }
-    }
 
-    function displayFlights(flights, category) {
-        const flightList = document.getElementById('flight-list');
-        flightList.innerHTML = ''; // Clear previous content
+        function displayFlights(flights, category) {
+            const flightList = document.getElementById('flight-list');
+            flightList.innerHTML = ''; 
 
-        flights.forEach(flight => {
-            if (category === 'all' || flight.category === category) {
-                flightList.innerHTML += `
+            flights.forEach(flight => {
+                if (category === 'all' || flight.category === category) {
+                    flightList.innerHTML += `
                         <div class="package-item ${flight.category} bg-white p-6 rounded-lg shadow-md">
                             <div class="flex items-center space-x-4">
                                 <img src="${flight.logo}" alt="${flight.airline} Logo" class="airline-logo">
@@ -158,25 +171,25 @@
                             </div>
                         </div>
                     `;
-            }
+                }
+            });
+        }
+
+        function filterFlights(category) {
+            fetch('datas/flights.json')
+                .then(response => response.json())
+                .then(flights => displayFlights(flights, category))
+                .catch(error => console.error('Error filtering flights:', error));
+
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('tab-active'));
+            document.getElementById(`tab-${category}`).classList.add('tab-active');
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            loadHeader();
+            loadFooter();
+            fetchFlights();
         });
-    }
-
-    function filterFlights(category) {
-        fetch('datas/flights.json')
-            .then(response => response.json())
-            .then(flights => displayFlights(flights, category));
-
-        // Update selected tab styling
-        document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('tab-active'));
-        document.getElementById(`tab-${category}`).classList.add('tab-active');
-    }
-
-    document.addEventListener('DOMContentLoaded', () => {
-        loadHeader();
-        loadFooter();
-        fetchFlights();
-    });
     </script>
 </body>
 

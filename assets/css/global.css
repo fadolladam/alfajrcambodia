@@ -1,0 +1,11 @@
+section {
+  padding-top: 2rem; /* Adjust padding as needed */
+  padding-bottom: 2rem;
+}
+
+@media (max-width: 768px) {
+  section {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+}
