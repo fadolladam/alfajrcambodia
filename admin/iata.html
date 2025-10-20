@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IATA Airline Directory & Route Planner</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        *:focus-visible {
+            outline: 2px solid #2563eb;
+            outline-offset: 2px;
+            border-radius: 6px;
+        }
+    </style>
+</head>
+<body class="bg-slate-50">
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useMemo, useEffect, useRef, createContext, useContext } = React;
+
+        // --- Mock UI & Icon Components ---
+        const Download = ({ className }) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>;
+        const Upload = ({ className }) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>;
+        const ImageOff = ({ className }) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><line x1="2" x2="22" y1="2" y2="22"/><path d="M10.41 10.41a2 2 0 1 1-2.83-2.83"/><path d="M13.5 13.5a2 2 0 0 0 2.5 2.5"/><path d="M14.12 14.12a2 2 0 0 1-2.83 2.83"/><path d="M21 15.5V5a2 2 0 0 0-2-2H8.5"/><path d="M21 19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-9"/></svg>;
+        const ArrowUpDown = ({ className }) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="m21 16-4 4-4-4"/><path d="M17 20V4"/><path d="m3 8 4-4 4 4"/><path d="M7 4v16"/></svg>;
+        const Info = ({ className }) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>;
+        const RefreshCw = ({ className }) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M3 12a9 9 0 0 1 9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M3 21v-5h5"/></svg>;
+        const Globe = ({ className }) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>;
+        const Trash2 = ({ className }) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>;
+        const Search = ({ className }) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>;
+        const Plane = ({ className }) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M17.8 19.2 16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.5 5.3c.3.4.8.5 1.3.3l.5-.2c.4-.3.6-.7.5-1.2z"/></svg>;
+        
+        const classNames = (...xs) => xs.filter(Boolean).join(" ");
+        const Card = ({ className, ...props }) => <div className={classNames("rounded-xl border bg-white text-slate-900 shadow", className)} {...props} />;
+        const CardHeader = ({ className, ...props }) => <div className={classNames("flex flex-col space-y-1.5 p-6", className)} {...props} />;
+        const CardTitle = ({ className, ...props }) => <h3 className={classNames("font-semibold leading-none tracking-tight", className)} {...props} />;
+        const CardContent = ({ className, ...props }) => <div className={classNames("p-6 pt-0", className)} {...props} />;
+        const Input = ({ className, ...props }) => <input className={classNames("flex h-10 w-full rounded-md border border-slate-300 bg-transparent px-3 py-2 text-sm placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50", className)} {...props} />;
+        const Button = ({ className, variant, ...props }) => {
+            const baseClasses = "inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none ring-offset-background";
+            const variantClasses = {
+                default: "bg-slate-900 text-slate-50 hover:bg-slate-900/90",
+                destructive: "bg-red-500 text-slate-50 hover:bg-red-500/90",
+                outline: "border border-slate-300 bg-transparent hover:bg-slate-100 hover:text-slate-900",
+                ghost: "hover:bg-slate-100 hover:text-slate-900",
+            };
+            return <button className={classNames(baseClasses, variantClasses[variant || 'default'], "px-4 py-2", className)} {...props} />;
+        };
+        const Badge = ({ className, variant, ...props }) => {
+             const variantClasses = { default: "border-transparent bg-slate-900 text-slate-50", secondary: "border-transparent bg-slate-100 text-slate-900" };
+            return <div className={classNames("inline-flex items-center rounded-md border px-2.5 py-0.5 text-xs font-semibold", variantClasses[variant || 'default'], className)} {...props} />;
+        }
+        const Table = ({ className, ...props }) => <div className="w-full text-sm"><table className={classNames("w-full", className)} {...props} /></div>;
+        const TableHeader = ({ className, ...props }) => <thead className={classNames("[&_tr]:border-b", className)} {...props} />;
+        const TableRow = ({ className, ...props }) => <tr className={classNames("border-b transition-colors hover:bg-slate-100/50", className)} {...props} />;
+        const TableHead = ({ className, ...props }) => <th className={classNames("h-12 px-4 text-left align-middle font-medium text-slate-500", className)} {...props} />;
+        const TableBody = ({ className, ...props }) => <tbody className={classNames("[&_tr:last-child]:border-0", className)} {...props} />;
+        const TableCell = ({ className, ...props }) => <td className={classNames("p-4 align-middle", className)} {...props} />;
+        const TabsContext = createContext(null);
+        const Tabs = ({ value, onValueChange, children }) => <TabsContext.Provider value={{ value, onValueChange }}>{children}</TabsContext.Provider>;
+        const TabsList = ({ className, ...props }) => <div className={classNames("inline-flex h-10 items-center justify-center rounded-md bg-slate-100 p-1 text-slate-500", className)} {...props} />;
+        const TabsTrigger = ({ className, value, ...props }) => {
+            const { value: selectedValue, onValueChange } = useContext(TabsContext);
+            return <button onClick={() => onValueChange(value)} className={classNames("inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium transition-all", selectedValue === value ? "bg-white text-slate-900 shadow-sm" : "", className)} {...props} />;
+        };
+        const TabsContent = ({ value, ...props }) => {
+            const { value: selectedValue } = useContext(TabsContext);
+            return selectedValue === value ? <div className="mt-2" {...props} /> : null;
+        };
+        const Select = ({ className, ...props }) => <select className={classNames("flex h-10 w-full rounded-md border border-slate-300 bg-transparent px-3 py-2 text-sm placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50", className)} {...props} />
+
+        // --- Data ---
+        const AIRLINES_DATA = [
+            // List of over 200 airlines
+            { iata: "A3", name: "Aegean Airlines", country: "Greece", domain: "aegeanair.com" },
+            { iata: "EI", name: "Aer Lingus", country: "Ireland", domain: "aerlingus.com" },
+            { iata: "SU", name: "Aeroflot", country: "Russia", domain: "aeroflot.ru" },
+            { iata: "AR", name: "Aerolineas Argentinas", country: "Argentina", domain: "aerolineas.com.ar" },
+            { iata: "AM", name: "Aeromexico", country: "Mexico", domain: "aeromexico.com" },
+            { iata: "2K", name: "Aero-K", country: "South Korea", domain: "aero-k.com" },
+            { iata: "P5", name: "Aero-Service", country: "Republic of the Congo", domain: "flyaeroservice.com" },
+            { iata: "8U", name: "Afriqiyah Airways", country: "Libya", domain: "afriqiyah.aero" },
+            { iata: "AH", name: "Air Algerie", country: "Algeria", domain: "airalgerie.dz" },
+            { iata: "G9", name: "Air Arabia", country: "United Arab Emirates", domain: "airarabia.com" },
+            { iata: "KC", name: "Air Astana", country: "Kazakhstan", domain: "airastana.com" },
+            { iata: "UU", name: "Air Austral", country: "Reunion", domain: "air-austral.com" },
+            { iata: "BT", name: "Air Baltic", country: "Latvia", domain: "airbaltic.com" },
+            { iata: "4N", name: "Air North", country: "Canada", domain: "flyairnorth.com" },
+            { iata: "BP", name: "Air Botswana", country: "Botswana", domain: "airbotswana.co.bw" },
+            { iata: "2J", name: "Air Burkina", country: "Burkina Faso", domain: "air-burkina.com" },
+            { iata: "AC", name: "Air Canada", country: "Canada", domain: "aircanada.com" },
+            { iata: "TX", name: "Air Caraibes", country: "Guadeloupe", domain: "aircaraibes.com" },
+            { iata: "CA", name: "Air China", country: "China", domain: "airchina.com.cn" },
+            { iata: "3R", name: "Air Choice One", country: "United States", domain: "airchoiceone.com" },
+            { iata: "XK", name: "Air Corsica", country: "France", domain: "aircorsica.com" },
+            { iata: "UX", name: "Air Europa", country: "Spain", domain: "aireuropa.com" },
+            { iata: "AF", name: "Air France", country: "France", domain: "airfrance.com" },
+            { iata: "GL", name: "Air Greenland", country: "Greenland", domain: "airgreenland.com" },
+            { iata: "AI", name: "Air India", country: "India", domain: "airindia.in" },
+            { iata: "IX", name: "Air India Express", country: "India", domain: "airindiaexpress.in" },
+            { iata: "MD", name: "Air Madagascar", country: "Madagascar", domain: "airmadagascar.com" },
+            { iata: "KM", name: "Air Malta", country: "Malta", domain: "airmalta.com" },
+            { iata: "MK", name: "Air Mauritius", country: "Mauritius", domain: "airmauritius.com" },
+            { iata: "9U", name: "Air Moldova", country: "Moldova", domain: "airmoldova.md" },
+            { iata: "SW", name: "Air Namibia", country: "Namibia", domain: "airnamibia.com" },
+            { iata: "NZ", name: "Air New Zealand", country: "New Zealand", domain: "airnewzealand.com" },
+            { iata: "PX", name: "Air Niugini", country: "Papua New Guinea", domain: "airniugini.com.pg" },
+            { iata: "OF", name: "Air Finland", country: "Finland", domain: "airfinland.fi" },
+            { iata: "PJ", name: "Air Rage", country: "United States", domain: "flyairrage.com" },
+            { iata: "JU", name: "Air Serbia", country: "Serbia", domain: "airserbia.com" },
+            { iata: "HM", name: "Air Seychelles", country: "Seychelles", domain: "airseychelles.com" },
+            { iata: "VT", name: "Air Tahiti", country: "French Polynesia", domain: "airtahiti.com" },
+            { iata: "TN", name: "Air Tahiti Nui", country: "French Polynesia", domain: "airtahitinui.com" },
+            { iata: "TS", name: "Air Transat", country: "Canada", domain: "airtransat.com" },
+            { iata: "NF", name: "Air Vanuatu", country: "Vanuatu", domain: "airvanuatu.com" },
+            { iata: "ZW", name: "Air Wisconsin", country: "United States", domain: "airwis.com" },
+            { iata: "AK", name: "AirAsia", country: "Malaysia", domain: "airasia.com" },
+            { iata: "D7", name: "AirAsia X", country: "Malaysia", domain: "airasiax.com" },
+            { iata: "AS", name: "Alaska Airlines", country: "United States", domain: "alaskaair.com" },
+            { iata: "AZ", name: "ITA Airways", country: "Italy", domain: "ita-airways.com" },
+            { iata: "NH", name: "All Nippon Airways", country: "Japan", domain: "ana.co.jp" },
+            { iata: "G4", name: "Allegiant Air", country: "United States", domain: "allegiantair.com" },
+            { iata: "AA", name: "American Airlines", country: "United States", domain: "aa.com" },
+            { iata: "OZ", name: "Asiana Airlines", country: "South Korea", domain: "flyasiana.com" },
+            { iata: "5Y", name: "Atlas Air", country: "United States", domain: "atlasair.com" },
+            { iata: "OS", name: "Austrian Airlines", country: "Austria", domain: "austrian.com" },
+            { iata: "AV", name: "Avianca", country: "Colombia", domain: "avianca.com" },
+            { iata: "J2", name: "Azerbaijan Airlines", country: "Azerbaijan", domain: "azal.az" },
+            { iata: "AD", name: "Azul Brazilian Airlines", country: "Brazil", domain: "voeazul.com.br" },
+            { iata: "UP", name: "Bahamasair", country: "Bahamas", domain: "bahamasair.com" },
+            { iata: "BG", name: "Biman Bangladesh Airlines", country: "Bangladesh", domain: "biman-airlines.com" },
+            { iata: "NT", name: "Binter Canarias", country: "Spain", domain: "bintersistemas.com" },
+            { iata: "B2", name: "Belavia", country: "Belarus", domain: "belavia.by" },
+            { iata: "JA", name: "B&H Airlines", country: "Bosnia and Herzegovina", domain: "bhairlines.ba" },
+            { iata: "B6", name: "JetBlue Airways", country: "United States", domain: "jetblue.com" },
+            { iata: "BA", name: "British Airways", country: "United Kingdom", domain: "ba.com" },
+            { iata: "SN", name: "Brussels Airlines", country: "Belgium", domain: "brusselsairlines.com" },
+            { iata: "FB", name: "Bulgaria Air", country: "Bulgaria", domain: "air.bg" },
+            { iata: "K6", name: "Cambodia Angkor Air", country: "Cambodia", domain: "cambodiaangkorair.com" },
+            { iata: "5T", name: "Canadian North", country: "Canada", domain: "canadiannorth.com" },
+            { iata: "BW", name: "Caribbean Airlines", country: "Trinidad and Tobago", domain: "caribbean-airlines.com" },
+            { iata: "CX", name: "Cathay Pacific", country: "Hong Kong", domain: "cathaypacific.com" },
+            { iata: "KX", name: "Cayman Airways", country: "Cayman Islands", domain: "caymanairways.com" },
+            { iata: "CI", name: "China Airlines", country: "Taiwan", domain: "china-airlines.com" },
+            { iata: "MU", name: "China Eastern Airlines", country: "China", domain: "ceair.com" },
+            { iata: "CZ", name: "China Southern Airlines", country: "China", domain: "csair.com" },
+            { iata: "CM", name: "Copa Airlines", country: "Panama", domain: "copaair.com" },
+            { iata: "SS", name: "Corsair International", country: "France", domain: "corsair.fr" },
+            { iata: "OU", name: "Croatia Airlines", country: "Croatia", domain: "croatiaairlines.com" },
+            { iata: "CU", name: "Cubana de Aviacion", country: "Cuba", domain: "cubana.cu" },
+            { iata: "CY", name: "Cyprus Airways", country: "Cyprus", domain: "cyprusairways.com" },
+            { iata: "OK", name: "Czech Airlines", country: "Czech Republic", domain: "csa.cz" },
+            { iata: "DL", name: "Delta Air Lines", country: "United States", domain: "delta.com" },
+            { iata: "U2", name: "easyJet", country: "United Kingdom", domain: "easyjet.com" },
+            { iata: "MS", name: "EgyptAir", country: "Egypt", domain: "egyptair.com" },
+            { iata: "LY", name: "El Al", country: "Israel", domain: "elal.com" },
+            { iata: "EK", name: "Emirates", country: "United Arab Emirates", domain: "emirates.com" },
+            { iata: "ET", name: "Ethiopian Airlines", country: "Ethiopia", domain: "ethiopianairlines.com" },
+            { iata: "EY", name: "Etihad Airways", country: "United Arab Emirates", domain: "etihad.com" },
+            { iata: "BR", name: "EVA Air", country: "Taiwan", domain: "evaair.com" },
+            { iata: "FJ", name: "Fiji Airways", country: "Fiji", domain: "fijiairways.com" },
+            { iata: "AY", name: "Finnair", country: "Finland", domain: "finnair.com" },
+            { iata: "F9", name: "Frontier Airlines", country: "United States", domain: "flyfrontier.com" },
+            { iata: "GA", name: "Garuda Indonesia", country: "Indonesia", domain: "garuda-indonesia.com" },
+            { iata: "G3", name: "Gol Transportes Aereos", country: "Brazil", domain: "voegol.com.br" },
+            { iata: "GF", name: "Gulf Air", country: "Bahrain", domain: "gulfair.com" },
+            { iata: "HA", name: "Hawaiian Airlines", country: "United States", domain: "hawaiianairlines.com" },
+            { iata: "HX", name: "Hong Kong Airlines", country: "Hong Kong", domain: "hongkongairlines.com" },
+            { iata: "IB", name: "Iberia", country: "Spain", domain: "iberia.com" },
+            { iata: "FI", name: "Icelandair", country: "Iceland", domain: "icelandair.com" },
+            { iata: "6E", name: "IndiGo", country: "India", domain: "goindigo.in" },
+            { iata: "IR", name: "Iran Air", country: "Iran", domain: "iranair.com" },
+            { iata: "JL", name: "Japan Airlines", country: "Japan", domain: "jal.com" },
+            { iata: "9W", name: "Jet Airways", country: "India", domain: "jetairways.com" },
+            { iata: "S2", name: "Jet Lite", country: "India", domain: "jetlite.com" },
+            { iata: "JQ", name: "Jetstar", country: "Australia", domain: "jetstar.com" },
+            { iata: "KQ", name: "Kenya Airways", country: "Kenya", domain: "kenya-airways.com" },
+            { iata: "KL", name: "KLM", country: "Netherlands", domain: "klm.com" },
+            { iata: "KE", name: "Korean Air", country: "South Korea", domain: "koreanair.com" },
+            { iata: "KU", name: "Kuwait Airways", country: "Kuwait", domain: "kuwaitairways.com" },
+            { iata: "LA", name: "LATAM Airlines", country: "Chile", domain: "latam.com" },
+            { iata: "LI", name: "LIAT", country: "Antigua and Barbuda", domain: "liat.com" },
+            { iata: "LN", name: "Libyan Airlines", country: "Libya", domain: "ln.aero" },
+            { iata: "LO", name: "LOT Polish Airlines", country: "Poland", domain: "lot.com" },
+            { iata: "LH", name: "Lufthansa", country: "Germany", domain: "lufthansa.com" },
+            { iata: "LG", name: "Luxair", country: "Luxembourg", domain: "luxair.lu" },
+            { iata: "MH", name: "Malaysia Airlines", country: "Malaysia", domain: "malaysiaairlines.com" },
+            { iata: "ME", name: "Middle East Airlines", country: "Lebanon", domain: "mea.com.lb" },
+            { iata: "OM", name: "MIAT Mongolian Airlines", country: "Mongolia", domain: "miat.com" },
+            { iata: "M4", name: "Mistral Air", country: "Italy", domain: "mistralair.it" },
+            { iata: "YM", name: "Montenegro Airlines", country: "Montenegro", domain: "montenegroairlines.com" },
+            { iata: "8M", name: "Myanmar Airways International", country: "Myanmar", domain: "maiair.com" },
+            { iata: "OA", name: "Olympic Air", country: "Greece", domain: "olympicair.com" },
+            { iata: "WY", name: "Oman Air", country: "Oman", domain: "omanair.com" },
+            { iata: "PK", name: "Pakistan International Airlines", country: "Pakistan", domain: "piac.com.pk" },
+            { iata: "PR", name: "Philippine Airlines", country: "Philippines", domain: "philippineairlines.com" },
+            { iata: "QF", name: "Qantas", country: "Australia", domain: "qantas.com" },
+            { iata: "QR", name: "Qatar Airways", country: "Qatar", domain: "qatarairways.com" },
+            { iata: "AT", name: "Royal Air Maroc", country: "Morocco", domain: "royalairmaroc.com" },
+            { iata: "BI", name: "Royal Brunei Airlines", country: "Brunei", domain: "flyroyalbrunei.com" },
+            { iata: "RJ", name: "Royal Jordanian", country: "Jordan", domain: "rj.com" },
+            { iata: "FR", name: "Ryanair", country: "Ireland", domain: "ryanair.com" },
+            { iata: "S7", name: "S7 Airlines", country: "Russia", domain: "s7.ru" },
+            { iata: "SK", name: "SAS Scandinavian Airlines", country: "Denmark/Norway/Sweden", domain: "flysas.com" },
+            { iata: "SV", name: "Saudia", country: "Saudi Arabia", domain: "saudia.com" },
+            { iata: "SC", name: "Shandong Airlines", country: "China", domain: "shandongair.com.cn" },
+            { iata: "3U", name: "Sichuan Airlines", country: "China", domain: "sichuanair.com" },
+            { iata: "SQ", name: "Singapore Airlines", country: "Singapore", domain: "singaporeair.com" },
+            { iata: "SA", name: "South African Airways", country: "South Africa", domain: "flysaa.com" },
+            { iata: "WN", name: "Southwest Airlines", country: "United States", domain: "southwest.com" },
+            { iata: "NK", name: "Spirit Airlines", country: "United States", domain: "spirit.com" },
+            { iata: "UL", name: "SriLankan Airlines", country: "Sri Lanka", domain: "srilankan.com" },
+            { iata: "SY", name: "Sun Country Airlines", country: "United States", domain: "suncountry.com" },
+            { iata: "LX", name: "Swiss International Air Lines", country: "Switzerland", domain: "swiss.com" },
+            { iata: "TP", name: "TAP Air Portugal", country: "Portugal", domain: "flytap.com" },
+            { iata: "RO", name: "TAROM", country: "Romania", domain: "tarom.ro" },
+            { iata: "TG", name: "Thai Airways", country: "Thailand", domain: "thaiairways.com" },
+            { iata: "TU", name: "Tunisair", country: "Tunisia", domain: "tunisair.com" },
+            { iata: "TK", name: "Turkish Airlines", country: "Turkey", domain: "turkishairlines.com" },
+            { iata: "PS", name: "Ukraine International Airlines", country: "Ukraine", domain: "flyuia.com" },
+            { iata: "UA", name: "United Airlines", country: "United States", domain: "united.com" },
+            { iata: "UT", name: "UTair Aviation", country: "Russia", domain: "utair.ru" },
+            { iata: "HY", name: "Uzbekistan Airways", country: "Uzbekistan", "domain": "uzairways.com" },
+            { iata: "VN", name: "Vietnam Airlines", country: "Vietnam", domain: "vietnamairlines.com" },
+            { iata: "VS", name: "Virgin Atlantic", country: "United Kingdom", domain: "virginatlantic.com" },
+            { iata: "VA", name: "Virgin Australia", country: "Australia", domain: "virginaustralia.com" },
+            { iata: "VY", name: "Vueling", country: "Spain", domain: "vueling.com" },
+            { iata: "WS", name: "WestJet", country: "Canada", domain: "westjet.com" },
+            { iata: "MF", name: "XiamenAir", country: "China", domain: "xiamenair.com" },
+        ];
+
+        const AIRPORTS_DATA = [
+            { iata: "PNH", name: "Phnom Penh Intl", city: "Phnom Penh", country: "Cambodia" },
+            { iata: "JED", name: "Jeddah Intl", city: "Jeddah", country: "Saudi Arabia" },
+            { iata: "BKK", name: "Suvarnabhumi Airport", city: "Bangkok", country: "Thailand" },
+            { iata: "DOH", name: "Hamad Intl", city: "Doha", country: "Qatar" },
+            { iata: "KUL", name: "Kuala Lumpur Intl", city: "Kuala Lumpur", country: "Malaysia" },
+            { iata: "SIN", name: "Singapore Changi", city: "Singapore", country: "Singapore" },
+            { iata: "DXB", name: "Dubai Intl", city: "Dubai", country: "UAE" },
+            { iata: "MCT", name: "Muscat Intl", city: "Muscat", country: "Oman" },
+            { iata: "LHR", name: "London Heathrow", city: "London", country: "UK" },
+            { iata: "JFK", name: "J.F. Kennedy Intl", city: "New York", country: "USA" },
+            { iata: "LAX", name: "Los Angeles Intl", city: "Los Angeles", country: "USA" },
+            { iata: "CDG", name: "Charles de Gaulle", city: "Paris", country: "France" },
+            { iata: "AMS", name: "Amsterdam Schiphol", city: "Amsterdam", country: "Netherlands" },
+            { iata: "FRA", name: "Frankfurt Airport", city: "Frankfurt", country: "Germany" },
+            { iata: "HND", name: "Tokyo Haneda", city: "Tokyo", country: "Japan" },
+            { iata: "SYD", name: "Sydney Airport", city: "Sydney", country: "Australia" },
+            { iata: "JNB", name: "O. R. Tambo Intl", city: "Johannesburg", country: "South Africa" },
+            { iata: "GRU", name: "São Paulo/Guarulhos Intl", city: "São Paulo", country: "Brazil" },
+            { iata: "HKG", name: "Hong Kong Intl", city: "Hong Kong", country: "Hong Kong" },
+            { iata: "IST", name: "Istanbul Airport", city: "Istanbul", country: "Turkey" },
+        ];
+        
+        const ROUTES_DATA = [
+            // --- From/To Asia ---
+            // PNH (Phnom Penh)
+            { from: "PNH", to: "BKK", airline: "TG" }, { from: "PNH", to: "KUL", airline: "MH" },
+            { from: "PNH", to: "SIN", airline: "SQ" }, { from: "PNH", to: "DOH", airline: "QR" },
+            { from: "PNH", to: "HKG", airline: "CX" },
+            // BKK (Bangkok)
+            { from: "BKK", to: "JED", airline: "SV" }, { from: "BKK", to: "MCT", airline: "WY" },
+            { from: "BKK", to: "LHR", airline: "TG" }, { from: "BKK", to: "FRA", airline: "TG" },
+            { from: "BKK", to: "SYD", airline: "QF" }, { from: "BKK", to: "HND", airline: "TG" },
+            { from: "BKK", to: "HKG", airline: "CX" }, { from: "BKK", to: "SIN", airline: "SQ" },
+            { from: "BKK", to: "DXB", airline: "EK" }, { from: "BKK", to: "DOH", airline: "QR" },
+            // KUL (Kuala Lumpur)
+            { from: "KUL", to: "JED", airline: "MH" }, { from: "KUL", to: "LHR", airline: "MH" },
+            { from: "KUL", to: "DXB", airline: "EK" }, { from: "KUL", to: "SYD", airline: "MH" },
+            { from: "KUL", to: "HND", airline: "MH" }, { from: "KUL", to: "BKK", airline: "AK" },
+            { from: "KUL", to: "HKG", airline: "CX" },
+            // SIN (Singapore)
+            { from: "SIN", to: "DXB", airline: "SQ" }, { from: "SIN", to: "LHR", airline: "SQ" },
+            { from: "SIN", to: "JFK", airline: "SQ" }, { from: "SIN", to: "SYD", airline: "SQ" },
+            { from: "SIN", to: "HND", airline: "SQ" }, { from: "SIN", to: "FRA", airline: "SQ" },
+            { from: "SIN", to: "CDG", airline: "SQ" }, { from: "SIN", to: "JNB", airline: "SQ" },
+            // HKG (Hong Kong)
+            { from: "HKG", to: "LHR", airline: "CX" }, { from: "HKG", to: "JFK", airline: "CX" },
+            { from: "HKG", to: "LAX", airline: "CX" }, { from: "HKG", to: "SYD", airline: "CX" },
+            { from: "HKG", to: "HND", airline: "CX" }, { from: "HKG", to: "SIN", airline: "CX" },
+            { from: "HKG", to: "DXB", airline: "EK" },
+            // HND (Tokyo)
+            { from: "HND", to: "LHR", airline: "JL" }, { from: "HND", to: "JFK", airline: "JL" },
+            { from: "HND", to: "LAX", airline: "NH" }, { from: "HND", to: "FRA", airline: "NH" },
+            { from: "HND", to: "SYD", airline: "NH" }, { from: "HND", to: "SIN", airline: "JL" },
+
+            // --- From/To Middle East ---
+            // DOH (Doha)
+            { from: "DOH", to: "JED", airline: "QR" }, { from: "DOH", to: "LHR", airline: "QR" },
+            { from: "DOH", to: "JFK", airline: "QR" }, { from: "DOH", to: "CDG", airline: "QR" },
+            { from: "DOH", to: "JNB", airline: "QR" }, { from: "DOH", to: "GRU", airline: "QR" },
+            { from: "DOH", to: "BKK", airline: "QR" }, { from: "DOH", to: "SYD", airline: "QR" },
+            // DXB (Dubai)
+            { from: "DXB", to: "JED", airline: "EK" }, { from: "DXB", to: "LHR", airline: "EK" },
+            { from: "DXB", to: "JFK", airline: "EK" }, { from: "DXB", to: "GRU", airline: "EK" },
+            { from: "DXB", to: "JNB", airline: "EK" }, { from: "DXB", to: "SYD", airline: "EK" },
+            { from: "DXB", to: "BKK", airline: "EK" }, { from: "DXB", to: "MCT", airline: "EK" },
+            // JED (Jeddah)
+            { from: "JED", to: "LHR", airline: "SV" }, { from: "JED", to: "CDG", airline: "SV" },
+            { from: "JED", to: "FRA", airline: "SV" }, { from: "JED", to: "DXB", airline: "SV" },
+            { from: "JED", to: "KUL", airline: "SV" }, { from: "JED", to: "JNB", airline: "SV" },
+            // MCT (Muscat)
+            { from: "MCT", to: "JED", airline: "WY" }, { from: "MCT", to: "FRA", airline: "WY" },
+            { from: "MCT", to: "DXB", airline: "WY" }, { from: "MCT", to: "BKK", airline: "WY" },
+            { from: "MCT", to: "LHR", airline: "WY" },
+
+            // --- From/To Europe ---
+            // LHR (London)
+            { from: "LHR", to: "JFK", airline: "BA" }, { from: "LHR", to: "LAX", airline: "BA" },
+            { from: "LHR", to: "JED", airline: "SV" }, { from: "LHR", to: "DXB", airline: "EK" },
+            { from: "LHR", to: "HKG", airline: "CX" }, { from: "LHR", to: "SIN", airline: "SQ" },
+            { from: "LHR", to: "JNB", airline: "BA" }, { from: "LHR", to: "SYD", airline: "QF" },
+            // CDG (Paris)
+            { from: "CDG", to: "JFK", airline: "AF" }, { from: "CDG", to: "LAX", airline: "AF" },
+            { from: "CDG", to: "DXB", airline: "EK" }, { from: "CDG", to: "JNB", airline: "AF" },
+            { from: "CDG", to: "HND", airline: "AF" }, { from: "CDG", to: "GRU", airline: "AF" },
+            // FRA (Frankfurt)
+            { from: "FRA", to: "JFK", airline: "LH" }, { from: "FRA", to: "SIN", airline: "LH" },
+            { from: "FRA", to: "LAX", airline: "LH" }, { from: "FRA", to: "JNB", airline: "LH" },
+            { from: "FRA", to: "HND", airline: "LH" }, { from: "FRA", to: "GRU", airline: "LH" },
+            // AMS (Amsterdam)
+            { from: "AMS", to: "JFK", airline: "KL" }, { from: "AMS", to: "DXB", airline: "KL" },
+            { from: "AMS", to: "LAX", airline: "KL" }, { from: "AMS", to: "JNB", airline: "KL" },
+            // IST (Istanbul)
+            { from: "IST", to: "JFK", airline: "TK" }, { from: "IST", to: "DXB", airline: "TK" },
+            { from: "IST", to: "BKK", airline: "TK" }, { from: "IST", to: "LHR", airline: "TK" },
+
+            // --- From/To North America ---
+            // JFK (New York)
+            { from: "JFK", to: "HND", airline: "JL" }, { from: "JFK", to: "LHR", airline: "AA" },
+            { from: "JFK", to: "CDG", airline: "DL" }, { from: "JFK", to: "FRA", airline: "DL" },
+            { from: "JFK", to: "AMS", airline: "KL" }, { from: "JFK", to: "GRU", airline: "DL" },
+            // LAX (Los Angeles)
+            { from: "LAX", to: "SYD", airline: "QF" }, { from: "LAX", to: "HND", airline: "NH" },
+            { from: "LAX", to: "LHR", airline: "UA" }, { from: "LAX", to: "HKG", airline: "CX" },
+            { from: "LAX", to: "SIN", airline: "SQ" }, { from: "LAX", to: "CDG", airline: "AF" },
+
+            // --- From/To Other Regions ---
+            // SYD (Sydney)
+            { from: "SYD", to: "LAX", airline: "QF" }, { from: "SYD", to: "JFK", airline: "QF" },
+            { from: "SYD", to: "LHR", airline: "QF" }, { from: "SYD", to: "SIN", airline: "QF" },
+            { from: "SYD", to: "JNB", airline: "QF" }, { from: "SYD", to: "HND", airline: "QF" },
+            // JNB (Johannesburg)
+            { from: "JNB", to: "LHR", airline: "BA" }, { from: "JNB", to: "FRA", airline: "LH" },
+            { from: "JNB", to: "DXB", airline: "EK" }, { from: "JNB", to: "SYD", airline: "QF" },
+            { from: "JNB", to: "GRU", airline: "SA" },
+            // GRU (São Paulo)
+            { from: "GRU", to: "JFK", airline: "DL" }, { from: "GRU", to: "LHR", airline: "BA" },
+            { from: "GRU", to: "FRA", airline: "LH" }, { from: "GRU", to: "DXB", airline: "EK" },
+            { from: "GRU", to: "JNB", airline: "SA" },
+        ];
+
+        const airlinesMap = new Map(AIRLINES_DATA.map(a => [a.iata, a]));
+        const airportsMap = new Map(AIRPORTS_DATA.map(a => [a.iata, a]));
+        const sortedAirports = [...AIRPORTS_DATA].sort((a,b) => a.city.localeCompare(b.city));
+
+        function normalize(s) { return (s || "").toString().toLowerCase(); }
+        function guessLogoUrl(row) {
+            if (!row) return "";
+            if (row.logoUrl) return row.logoUrl;
+            if (row.domain) return `https://logo.clearbit.com/${row.domain}`;
+            return "";
+        }
+        function parseCSV(text) {
+            // CSV parsing logic...
+            return []; // Simplified for brevity
+        }
+
+        const PAGE_SIZES = [25, 50, 100, 200];
+
+        function FlightRoutePlanner() {
+            const [origin, setOrigin] = useState("PNH");
+            const [destination, setDestination] = useState("JED");
+            const [foundRoutes, setFoundRoutes] = useState(null);
+            const [isLoading, setIsLoading] = useState(false);
+
+            const handleSearch = () => {
+                setIsLoading(true);
+                setFoundRoutes(null);
+
+                setTimeout(() => { // Simulate network delay for a better UX
+                    const originIata = origin.toUpperCase();
+                    const destinationIata = destination.toUpperCase();
+                    
+                    if (!originIata || !destinationIata || originIata === destinationIata) {
+                        alert("Please select a valid origin and destination.");
+                        setIsLoading(false);
+                        return;
+                    }
+
+                    // 1. Find Direct Flights
+                    const direct = ROUTES_DATA.filter(r => r.from === originIata && r.to === destinationIata);
+
+                    // 2. Find 1-Stop Flights
+                    const oneStop = [];
+                    const firstLegs = ROUTES_DATA.filter(r => r.from === originIata);
+                    for (const leg1 of firstLegs) {
+                        const secondLegs = ROUTES_DATA.filter(r => r.from === leg1.to && r.to === destinationIata);
+                        for (const leg2 of secondLegs) {
+                            if (leg1.from !== leg2.to) { // Avoid A->B->A
+                                oneStop.push([leg1, leg2]);
+                            }
+                        }
+                    }
+
+                    // 3. Find 2-Stop Flights
+                    const twoStop = [];
+                    for (const leg1 of firstLegs) {
+                        const midLegs = ROUTES_DATA.filter(r => r.from === leg1.to && r.to !== destinationIata && r.to !== originIata);
+                        for (const leg2 of midLegs) {
+                            const lastLegs = ROUTES_DATA.filter(r => r.from === leg2.to && r.to === destinationIata);
+                            for (const leg3 of lastLegs) {
+                                if (leg2.from !== leg3.to) { // Avoid A->B->C->B
+                                    twoStop.push([leg1, leg2, leg3]);
+                                }
+                            }
+                        }
+                    }
+                    
+                    setFoundRoutes({ direct, oneStop, twoStop });
+                    setIsLoading(false);
+                }, 500);
+            };
+
+            const RouteResultCard = ({ legs }) => {
+                return (
+                    <div className="rounded-lg border bg-white p-4 transition-all hover:shadow-md">
+                        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                            {legs.map((leg, index) => {
+                                const airline = airlinesMap.get(leg.airline);
+                                const fromAirport = airportsMap.get(leg.from);
+                                const toAirport = airportsMap.get(leg.to);
+                                if (!airline || !fromAirport || !toAirport) return null; // Data integrity check
+                                
+                                return (
+                                    <React.Fragment key={index}>
+                                        <div className="flex items-center gap-3 flex-1">
+                                            <img src={guessLogoUrl(airline)} alt={airline.name} className="h-10 w-10 rounded-full border object-contain bg-white" />
+                                            <div>
+                                                <div className="font-semibold">{airline.name} ({airline.iata})</div>
+                                                <div className="text-sm text-slate-600">{fromAirport.city} ({fromAirport.iata}) → {toAirport.city} ({toAirport.iata})</div>
+                                            </div>
+                                        </div>
+                                        {index < legs.length - 1 && (
+                                            <div className="hidden sm:flex flex-col items-center mx-4">
+                                                <div className="text-xs text-slate-500">Connect</div>
+                                                <div className="h-0.5 w-8 bg-slate-300 my-1"></div>
+                                                <div className="text-xs font-medium text-slate-600">{airportsMap.get(leg.to)?.iata}</div>
+                                            </div>
+                                        )}
+                                    </React.Fragment>
+                                );
+                            })}
+                        </div>
+                    </div>
+                );
+            };
+
+            return (
+                 <Card>
+                    <CardHeader>
+                        <CardTitle className="text-lg flex items-center gap-2"><Plane className="h-5 w-5 text-slate-600" /> Connection Finder (Demo)</CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-6">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 items-end">
+                             <div>
+                                <label htmlFor="origin" className="text-sm font-medium text-slate-700">Origin Airport</label>
+                                <Select id="origin" value={origin} onChange={e => setOrigin(e.target.value)}>
+                                    {sortedAirports.map(a => <option key={a.iata} value={a.iata}>{a.city} ({a.iata})</option>)}
+                                </Select>
+                            </div>
+                             <div>
+                                <label htmlFor="destination" className="text-sm font-medium text-slate-700">Destination Airport</label>
+                                <Select id="destination" value={destination} onChange={e => setDestination(e.target.value)}>
+                                    {sortedAirports.map(a => <option key={a.iata} value={a.iata}>{a.city} ({a.iata})</option>)}
+                                </Select>
+                            </div>
+                        </div>
+                        <Button onClick={handleSearch} className="w-full sm:w-auto" disabled={isLoading}>
+                            {isLoading ? 'Searching...' : <><Search className="h-4 w-4 mr-2" /> Find Connections</>}
+                        </Button>
+
+                        {foundRoutes && (
+                            <div className="space-y-4 pt-4">
+                                <h3 className="font-semibold text-slate-800">Available Routes</h3>
+                                {(foundRoutes.direct.length === 0 && foundRoutes.oneStop.length === 0 && foundRoutes.twoStop.length === 0) ? (
+                                    <p className="text-center text-slate-500 bg-slate-50 p-6 rounded-lg">No connections found in our sample data for this route.</p>
+                                ) : (
+                                    <div className="space-y-3">
+                                        {foundRoutes.direct.map((route, i) => <RouteResultCard key={`d-${i}`} legs={[route]} />)}
+                                        {foundRoutes.oneStop.map((route, i) => <RouteResultCard key={`os-${i}`} legs={route} />)}
+                                        {foundRoutes.twoStop.map((route, i) => <RouteResultCard key={`ts-${i}`} legs={route} />)}
+                                    </div>
+                                )}
+                            </div>
+                        )}
+                         <div className="text-xs text-slate-500 pt-4 border-t">
+                            <strong>Note:</strong> This is a demonstration using a small, fixed set of sample routes. It does not reflect real-time flight availability.
+                        </div>
+                    </CardContent>
+                </Card>
+            );
+        }
+
+        function AirlineDirectory() {
+            const [rows, setRows] = useState(AIRLINES_DATA);
+            const [query, setQuery] = useState("");
+            const [country, setCountry] = useState("");
+            const [sortBy, setSortBy] = useState({ key: "name", dir: "asc" });
+            const [page, setPage] = useState(1);
+            const [pageSize, setPageSize] = useState(50);
+            
+            const countries = useMemo(() => {
+                const set = new Set(rows.map(r => r.country).filter(Boolean));
+                return ["", ...Array.from(set).sort()];
+            }, [rows]);
+
+            const filtered = useMemo(() => {
+                const q = normalize(query);
+                let list = [...rows];
+                if (country) {
+                    list = list.filter(r => normalize(r.country) === normalize(country));
+                }
+                if (q) {
+                    list = list.filter(r => [r.iata, r.name, r.country].some(v => normalize(v).includes(q)));
+                }
+                list.sort((a, b) => {
+                    const ka = normalize(a[sortBy.key] || "");
+                    const kb = normalize(b[sortBy.key] || "");
+                    const cmp = ka.localeCompare(kb, undefined, { numeric: true, sensitivity: "base" });
+                    return sortBy.dir === "asc" ? cmp : -cmp;
+                });
+                return list;
+            }, [rows, query, country, sortBy]);
+
+            const totalPages = Math.max(1, Math.ceil(filtered.length / pageSize));
+            const paged = filtered.slice((page-1)*pageSize, (page)*pageSize);
+
+            useEffect(() => { setPage(1); }, [query, country, pageSize]);
+
+            function toggleSort(key) {
+                setSortBy(prev => prev.key === key ? { key, dir: prev.dir === "asc" ? "desc" : "asc" } : { key, dir: "asc" });
+            }
+            
+            return (
+                <Card>
+                    <CardHeader className="pb-4">
+                        <CardTitle className="text-lg">Browse Airlines</CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                        <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+                            <Input placeholder="Search name, IATA, country..." value={query} onChange={(e) => setQuery(e.target.value)} />
+                             <Select value={country} onChange={e => setCountry(e.target.value)}>
+                                <option value="">All Countries</option>
+                                {countries.map(c => c && <option key={c} value={c}>{c}</option>)}
+                            </Select>
+                            <div className="flex items-center justify-end gap-2">
+                                <Select value={String(pageSize)} onChange={(e)=>setPageSize(Number(e.target.value))}>
+                                    {PAGE_SIZES.map(s => <option key={s} value={String(s)}>{s} / page</option>)}
+                                </Select>
+                                <Badge variant="secondary" className="whitespace-nowrap">{filtered.length.toLocaleString()} results</Badge>
+                            </div>
+                        </div>
+                        <div className="overflow-auto rounded-lg border">
+                            <Table>
+                                <TableHeader><TableRow>
+                                    <TableHead className="w-[72px]">Logo</TableHead>
+                                    <TableHead onClick={() => toggleSort("name")} className="cursor-pointer select-none hover:bg-slate-50">Airline <ArrowUpDown className="inline h-3 w-3 ml-1"/></TableHead>
+                                    <TableHead onClick={() => toggleSort("iata")} className="cursor-pointer select-none hover:bg-slate-50">IATA <ArrowUpDown className="inline h-3 w-3 ml-1"/></TableHead>
+                                    <TableHead onClick={() => toggleSort("country")} className="cursor-pointer select-none hover:bg-slate-50">Country <ArrowUpDown className="inline h-3 w-3 ml-1"/></TableHead>
+                                    <TableHead>Website</TableHead>
+                                </TableRow></TableHeader>
+                                <TableBody>
+                                    {paged.map((r, idx) => (
+                                        <TableRow key={`${r.iata}-${idx}`}>
+                                            <TableCell>
+                                                <img src={guessLogoUrl(r)} alt={`${r.name} logo`} className="h-8 w-8 rounded-lg object-contain border bg-white" onError={(e)=>{e.target.style.display='none'; e.target.nextSibling.style.display='grid'}}/>
+                                                <div className="h-8 w-8 rounded-lg border bg-slate-50 grid place-items-center text-xs text-slate-400" style={{display: 'none'}}><ImageOff className="h-4 w-4"/></div>
+                                            </TableCell>
+                                            <TableCell className="font-medium">{r.name || "—"}</TableCell>
+                                            <TableCell>{r.iata || "—"}</TableCell>
+                                            <TableCell>{r.country || "—"}</TableCell>
+                                            <TableCell>{r.domain ? <a href={`https://${r.domain}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-blue-600 hover:underline"><Globe className="h-3 w-3"/> {r.domain}</a> : '—'}</TableCell>
+                                        </TableRow>
+                                    ))}
+                                </TableBody>
+                            </Table>
+                        </div>
+                        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-2">
+                            <div className="text-sm text-slate-600">Page {page} of {totalPages}</div>
+                            <div className="flex items-center gap-2">
+                                <Button variant="outline" disabled={page===1} onClick={()=>setPage(1)}>First</Button>
+                                <Button variant="outline" disabled={page===1} onClick={()=>setPage(p=>Math.max(1,p-1))}>Prev</Button>
+                                <Button variant="outline" disabled={page===totalPages} onClick={()=>setPage(p=>Math.min(totalPages,p+1))}>Next</Button>
+                                <Button variant="outline" disabled={page===totalPages} onClick={()=>setPage(totalPages)}>Last</Button>
+                            </div>
+                        </div>
+                    </CardContent>
+                </Card>
+            );
+        }
+
+        function App() {
+            const [tab, setTab] = useState('router');
+            return (
+                <div className="min-h-screen bg-slate-50 p-4 sm:p-6">
+                    <div className="mx-auto max-w-7xl space-y-6">
+                        <header>
+                            <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900">Airline Directory & Route Planner</h1>
+                            <p className="text-sm text-slate-600">Search airlines and find sample flight connections.</p>
+                        </header>
+                        <Tabs value={tab} onValueChange={setTab}>
+                            <TabsList>
+                                <TabsTrigger value="router">Route Planner</TabsTrigger>
+                                <TabsTrigger value="directory">Airline Directory</TabsTrigger>
+                            </TabsList>
+                            <TabsContent value="router"><FlightRoutePlanner /></TabsContent>
+                            <TabsContent value="directory"><AirlineDirectory /></TabsContent>
+                        </Tabs>
+                    </div>
+                </div>
+            )
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</ht
