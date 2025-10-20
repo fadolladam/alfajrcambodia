@@ -2,19 +2,69 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="robots" content="noindex">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>We've Moved to ZAFAA Travel</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f7fa;
+      color: #333;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .popup {
+      background: #fff;
+      padding: 2rem 2.5rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+      text-align: center;
+      max-width: 400px;
+      animation: fadeIn 0.8s ease-in-out;
+    }
+    .popup h1 {
+      color: #c71e1e;
+      margin-bottom: 1rem;
+    }
+    .popup p {
+      font-size: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    .popup a {
+      display: inline-block;
+      padding: 0.6rem 1.2rem;
+      background-color: #c71e1e;
+      color: #fff;
+      border-radius: 6px;
+      text-decoration: none;
+      font-weight: bold;
+      transition: background 0.3s ease;
+    }
+    .popup a:hover {
+      background-color: #a41616;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.9); }
+      to { opacity: 1; transform: scale(1); }
+    }
+  </style>
   <script>
-    // Redirect any page or subpage to the same path on the new domain
+    // Redirect after a short delay and keep path/query intact
     const newDomain = "https://zafaatravel.com";
     const newUrl = newDomain + window.location.pathname + window.location.search + window.location.hash;
-    window.location.replace(newUrl);
+    setTimeout(() => {
+      window.location.href = newUrl;
+    }, 5000); // 5 seconds delay
   </script>
-  <noscript>
-    <meta http-equiv="refresh" content="0; url=https://zafaatravel.com/">
-  </noscript>
-  <title>Redirecting to ZAFAA Travel</title>
 </head>
 <body>
-  <p>Redirecting to <a href="https://zafaatravel.com/">ZAFAA Travel</a>...</p>
+  <div class="popup">
+    <h1>We've Moved!</h1>
+    <p>Our website has officially moved to <strong>ZAFAA Travel</strong>.<br>
+    You’ll be redirected automatically in a few seconds.</p>
+    <a href="https://zafaatravel.com/">Go to ZAFAA Travel Now</a>
+  </div>
 </body>
 </html>
