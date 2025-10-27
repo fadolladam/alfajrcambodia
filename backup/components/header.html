@@ -1,0 +1,90 @@
+<header class="bg-white text-black shadow-sm fixed top-0 left-0 w-full z-50">
+    <div class="container mx-auto flex justify-between items-center p-4 max-w-[1440px]">
+        <!-- Logo Section -->
+        <a href="index.html" class="flex items-center">
+            <img src="assets/images/logo/logo_black.png" alt="Alfajr Cambodia Logo" class="h-10 mr-2">
+            <span class="font-bold text-black text-lg">Alfajr Cambodia</span>
+        </a>
+        <!-- Navigation Menu -->
+        <nav id="mobile-menu" class="fixed inset-0 bg-white bg-opacity-90 z-50 transform -translate-x-full transition-transform duration-300 md:relative md:translate-x-0 md:flex md:space-x-6 md:bg-transparent md:p-0 md:inset-auto">
+            <!-- Mobile Menu Header -->
+            <div class="flex items-center justify-between mb-6 md:hidden p-4">
+                <!-- Logo -->
+                <a href="index.html" class="flex items-center space-x-2">
+                    <img src="assets/images/logo/logo_black.png" alt="Alfajr Cambodia Logo" class="h-10">
+                    <span class="font-bold text-black text-lg">Alfajr Cambodia</span>
+                </a>
+                <!-- Close menu button -->
+                <button id="close-menu" aria-label="Close menu" class="text-black text-2xl focus:outline-none focus:ring-2 focus:ring-gray-400">
+                    &#10005;
+                </button>
+            </div>
+            <!-- Navigation List -->
+            <ul class="flex flex-col space-y-4 text-black p-6 md:space-y-0 md:flex-row md:items-center md:space-x-8 md:p-0">
+                <li>
+                    <a href="index.html" class="hover:text-blue-500 text-lg flex items-center">
+                        Home
+                    </a>
+                </li>
+                <li>
+                    <a href="umrah-package.html" class="hover:text-blue-500 text-lg flex items-center">
+                        Umrah Packages
+                    </a>
+                </li>
+                <li>
+                    <a href="destinations.html" class="hover:text-blue-500 text-lg flex items-center">
+                        Destinations
+                    </a>
+                </li>
+                <li>
+                    <a href="hotels.html" class="hover:text-blue-500 text-lg flex items-center">
+                        Hotels
+                    </a>
+                </li>
+                <li>
+                    <a href="flights.html" class="hover:text-blue-500 text-lg flex items-center">
+                        Flights
+                    </a>
+                </li>
+                <li>
+                    <a href="contact.html" class="hover:text-blue-500 text-lg flex items-center">
+                        About us
+                    </a>
+                </li>
+                <li>
+                    <a href="https://wa.me/85569556444?text=Hello" target="_blank" class="inline-flex items-center px-4 py-2 text-white bg-green-600 rounded hover:bg-green-600 transition">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp Logo" class="w-5 h-5 mr-2">
+                        Contact us
+                    </a>
+                </li>
+            </ul>
+        </nav>
+        <!-- Button Section -->
+        <div class="flex items-center">
+            <button id="burger-button" aria-label="Open menu" class="md:hidden p-2 bg-white text-black rounded border border-gray-300">
+                <!-- Burger Icon -->
+                <div class="space-y-1">
+                    <span class="block w-6 h-0.5 bg-black"></span>
+                    <span class="block w-6 h-0.5 bg-black"></span>
+                    <span class="block w-6 h-0.5 bg-black"></span>
+                </div>
+            </button>
+        </div>
+    </div>
+</header>
+
+<script>
+    // Ensure the active link gets underlined dynamically
+    document.addEventListener("DOMContentLoaded", () => {
+        const currentPage = window.location.pathname.split("/").pop(); // Get the current file name
+        const navLinks = document.querySelectorAll("nav ul a");
+
+        navLinks.forEach(link => {
+            const linkHref = link.getAttribute("href").split("/").pop(); // Extract file name from href
+            if (linkHref === currentPage) {
+                link.classList.add("border-b-2", "border-blue-500", "pb-2");
+            }
+        });
+    });
+</script>
+<script src="assets/js/meta-tags.js" defer></script>
